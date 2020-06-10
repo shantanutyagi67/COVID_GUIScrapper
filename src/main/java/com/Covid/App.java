@@ -222,10 +222,11 @@ public class App extends JComponent
 		textField.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		textField.setHorizontalAlignment(JTextField.CENTER );
 		label.setHorizontalAlignment(JTextField.CENTER );
+		label.setBackground(Color.GRAY);
 		button.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-		button.setBounds(150, 400, 90, 30);
+		button.setBounds(frame.getWidth()/2-100, 400, 90, 30);
 		resetButton.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-		resetButton.setBounds(250, 400, 90, 30);
+		resetButton.setBounds(frame.getWidth()/2, 400, 90, 30);
 		label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		// initial display of global data
 		StringBuffer sbr = new StringBuffer();
@@ -240,6 +241,7 @@ public class App extends JComponent
 		frame.add(textField, BorderLayout.NORTH);
 		frame.add(label, BorderLayout.CENTER);
 		frame.getContentPane().setBackground(Color.WHITE);
+		frame.setResizable(false);
 		frame.setVisible(true);
     }
 
@@ -266,4 +268,8 @@ public class App extends JComponent
             di.close();
             fo.close();
 	}
+//	public void paint(Graphics g)
+//	{
+//		repaint();
+//	}
 }
