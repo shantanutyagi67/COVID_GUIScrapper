@@ -1,10 +1,11 @@
+<updates> faster speed and removing unnnecessary re fetching of data. will add error for wrong country names using file handling.
 # COVID_Scrapper
 
 1. Uses jsoup to scrap data and flag image from https://www.worldometers.info/coronavirus/
 2. Current global data can be seen.
-3. Type the name of the counter in search (case insensitive for names) from the keywords mentioned at the end
-4. Click on fetch button to fetch the dta from the URL and display in the GUI
-5. Reset button will take you back to the current global data
+3. Type the name of the country in search (case insensitive for names) from the keywords mentioned at the end.
+4. Click on fetch button to fetch the data from the URL and display in the GUI.
+5. Reset button will take you back to the current global data.
 6. Country flags will be downloaded in the relative project path.
 
 COUNTRIES :
