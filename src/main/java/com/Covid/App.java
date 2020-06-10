@@ -16,6 +16,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,7 +88,8 @@ public class App extends JComponent
 		return data;
 	}
 	static int n=0;
-	static JLabel imgLabel = new JLabel();
+	static String country = "___";
+	static JLabel imgLabel = new JLabel();	//this is to fix cold start while removing previous iteration flag from the imglabel
     public static void main( String[] args ) throws IOException
     {
 //    	//Initialisation
@@ -95,7 +97,7 @@ public class App extends JComponent
 //    	Vector<String> dataOverall = new  Vector<String>();
 //    	System.out.println("Covid Data Tracker");
 //    	
-//    	//print overall data for COVID
+//    	//print overall data for COVID in console
 //    	dataOverall = getDataOverall();
 //    	dataOverall.forEach((d) -> {
 //    		System.out.println(d);
@@ -119,6 +121,7 @@ public class App extends JComponent
     	JLabel label =new JLabel();
     	JButton button = new JButton("FETCH");
     	JButton resetButton = new JButton("RESET");
+    	//to remove text when searh bar is clicked
     	textField.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
@@ -130,27 +133,36 @@ public class App extends JComponent
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					//JLabel imgLabel = new JLabel();
-					n++;
-					if(n==1) {
-//						frame.add(imgLabel, BorderLayout.SOUTH);
+					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText())) {
+						//JLabel imgLabel = new JLabel();
+						n++;
+						if(n>1) {
+//							frame.add(imgLabel, BorderLayout.SOUTH);
+						}
+						frame.remove(imgLabel);	//remove previous iteration image from frame
+						StringBuffer sbr = new StringBuffer(); //to show text in frame
+						sbr.append("<html>").append("<strong>").append(textField.getText().toUpperCase()).append("</strong>").append(":<br>");
+						country = textField.getText();
+						getDataCountry(textField.getText()).forEach((e) -> {
+							sbr.append(e).append("<br>");
+						});
+						sbr.append("</html>");
+						label.setText(sbr.toString());
+						getFlag(textField.getText().toLowerCase());
+						//label.add(image);
+						// image icon has image that is to be added to component in a frame
+						ImageIcon image = new ImageIcon(textField.getText().toLowerCase()+".gif");
+						imgLabel = new JLabel(image);
+						imgLabel.setBorder(new EmptyBorder(40, 0, 0, 0)); //border padding for alignment
+						frame.add(imgLabel, BorderLayout.NORTH);
+						//delete the downloaded flag
+						File file = new File(textField.getText().toLowerCase()+".gif");
+						file.delete();
+						textField.setText("");	//reset search bar which is not really needed but just in case the mouse click does not function properly
 					}
-					frame.remove(imgLabel);
-					StringBuffer sbr = new StringBuffer();
-					sbr.append("<html>").append("<strong>").append(textField.getText().toUpperCase()).append("</strong>").append(":<br>");
-					getDataCountry(textField.getText()).forEach((e) -> {
-						sbr.append(e).append("<br>");
-					});
-					sbr.append("</html>");
-					label.setText(sbr.toString());
-					getFlag(textField.getText().toLowerCase());
-					//label.add(image);
-					ImageIcon image = new ImageIcon(textField.getText().toLowerCase()+".gif");
-					imgLabel = new JLabel(image);
-					imgLabel.setBorder(new EmptyBorder(40, 0, 0, 0));
-					frame.add(imgLabel, BorderLayout.NORTH);
-					textField.setText("");
-				} catch (IOException e) {
+					else;
+						//textField.setText("");
+				}catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -160,7 +172,8 @@ public class App extends JComponent
     	resetButton.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {	//removes image, resets the search bar and text displayed to global data
+				if(!textField.getText().equals("Type Country Name...")) {
 				frame.remove(imgLabel);
 				textField.setText("Type Country Name...");
 				StringBuffer sbr = new StringBuffer();
@@ -172,19 +185,21 @@ public class App extends JComponent
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
+				country="___";
 				sbr.append("</html>");
 				label.setText(sbr.toString());
-			}
+			}}
     		
     	});
-    	
+    	// setting up the frame - positioning of components
 //		frame.add(imgLabel, BorderLayout.SOUTH);
-    	frame.add(imgLabel, BorderLayout.SOUTH);
     	//Font f =new Font("TimesRoman", Font.PLAIN, 10);
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setBounds(0,0,500,500);
 		frame.getContentPane().add(new App());
+		frame.getContentPane().setBackground(Color.GRAY);
 		frame.setLayout(new BorderLayout());
+		frame.add(imgLabel, BorderLayout.SOUTH);
 		textField.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		textField.setHorizontalAlignment(JTextField.CENTER );
 		label.setHorizontalAlignment(JTextField.CENTER );
@@ -193,6 +208,7 @@ public class App extends JComponent
 		resetButton.setFont(new Font("TimesRoman", Font.PLAIN, 15));
 		resetButton.setBounds(250, 400, 90, 30);
 		label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+		// initial display of global data
 		StringBuffer sbr = new StringBuffer();
 		sbr.append("<html>").append("<strong>").append("GLOBAL:").append("</strong>").append("<br>");
 		getDataOverall().forEach((e) -> {
@@ -210,7 +226,9 @@ public class App extends JComponent
 
 	protected static void getFlag( String country ) throws IOException {
 		String url = "https://www.worldometers.info/coronavirus/country/" + country + "/";
+		//scrapping again
 		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
+		//now the downloading procedure begins
 		String imgURL = doc.select("img").get(1).attr("abs:src");
 		//System.out.println(imgURL);
 		//System.out.println(doc.select("body > div:nth-child(10) > div:nth-child(2) > div.col-md-8 > div > div:nth-child(5) > h1 > div > img").attr("abs:src"));
@@ -219,10 +237,11 @@ public class App extends JComponent
 			URL urlImage = new URL(imgURL);
             byte[] buffer = new byte[1];
             URLConnection urlConnection = urlImage.openConnection();
+            // IMPORTANT- we need to mimic the browser request which can be found out in networking tab 
             urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36");
             urlConnection.connect();
-            DataInputStream di = new DataInputStream(urlConnection.getInputStream());
-            FileOutputStream fo = new FileOutputStream(country+".gif");
+            DataInputStream di = new DataInputStream(urlConnection.getInputStream()); //read
+            FileOutputStream fo = new FileOutputStream(country+".gif"); //write
             while (-1 != di.read(buffer, 0, 1))
               fo.write(buffer, 0, 1);
             di.close();

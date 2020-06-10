@@ -1,5 +1,12 @@
-<updates> faster speed and removing unnnecessary re fetching of data. will add error for wrong country names using file handling.
-# COVID_Scrapper
+# Notes for Developers
+<edge cases> 	1. Reset button will execute if you click on search box and then click on reset button.
+		2. Typing "Type Country Name..." in search and then clicking reset buton wont result in a reset give a valid counntry was 			fetched before doing this.
+		3. reseting search box text back to "Type Country Name..." in some cases needs to be taken care of as the reset button 				works by identifying this text.
+<edge caases resolved> 	1. Successive fetching of same countries wont take place.
+			2. Successive reset wont take place.
+			3. empty fetching wont take place.
+			 
+# COVID_Scrapper Manual for Users
 
 1. Uses jsoup to scrap data and flag image from https://www.worldometers.info/coronavirus/
 2. Current global data can be seen.
@@ -7,8 +14,9 @@
 4. Click on fetch button to fetch the data from the URL and display in the GUI.
 5. Reset button will take you back to the current global data.
 6. Country flags will be downloaded in the relative project path.
+7. The flag images are deleted right after they are downloaded.
 
-COUNTRIES :
+VALID COUNTRY NAMES(case insensitive) :
 US
 Brazil
 Russia
