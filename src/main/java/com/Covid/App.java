@@ -99,7 +99,7 @@ public class App extends JComponent
     	try {
     		BufferedReader br = new BufferedReader(new FileReader("validateCountry.txt"));
     		    while (br.ready()) {
-    		        validCountries.add(br.readLine());
+    		        validCountries.add(br.readLine().toLowerCase());
     		    }
     		}
     		 catch (FileNotFoundException e) {
