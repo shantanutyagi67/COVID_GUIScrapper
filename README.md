@@ -1,11 +1,11 @@
 # Notes for Developers
 <edge cases> 	1. Reset button will execute if you click on search box and then click on reset button.
-		2. Typing "Type Country Name..." in search and then clicking reset buton wont result in a reset give a valid counntry was 			fetched before doing this.
+		2. Typing "Type Country Name..." in search and then clicking reset buton wont result in a reset give a valid counntry 		was fetched before doing this.
 		3. reseting search box text back to "Type Country Name..." in some cases needs to be taken care of as the reset button 				works by identifying this text.
-		4. invalid country code should not result in fetching.
 <edge caases resolved> 	1. Successive fetching of same countries wont take place.
 			2. Successive reset wont take place.
 			3. empty fetching wont take place.
+			4. invalid country code do not result in fetching.
 			 
 # COVID_Scrapper Manual for Users
 1. Uses jsoup to scrap data and flag image from https://www.worldometers.info/coronavirus/

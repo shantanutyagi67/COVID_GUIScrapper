@@ -17,7 +17,9 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -92,6 +94,18 @@ public class App extends JComponent
 	static JLabel imgLabel = new JLabel();	//this is to fix cold start while removing previous iteration flag from the imglabel
     public static void main( String[] args ) throws IOException
     {
+    	Vector<String> validCountries = new Vector<String>();
+    	//file handling to store all valid countries in list
+    	try {
+    		BufferedReader br = new BufferedReader(new FileReader("validateCountry.txt"));
+    		    while (br.ready()) {
+    		        validCountries.add(br.readLine());
+    		    }
+    		}
+    		 catch (FileNotFoundException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
 //    	//Initialisation
 //    	Vector<String> dataCountry = new  Vector<String>();
 //    	Vector<String> dataOverall = new  Vector<String>();
@@ -134,6 +148,11 @@ public class App extends JComponent
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText())) {
+						//checking for valid country else break
+						if(!validCountries.contains(textField.getText())) {
+							textField.setText("Type Country Name...");
+							return;
+						}
 						//JLabel imgLabel = new JLabel();
 						n++;
 						if(n>1) {
