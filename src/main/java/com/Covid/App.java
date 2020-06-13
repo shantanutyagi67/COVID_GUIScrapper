@@ -97,7 +97,7 @@ public class App extends JComponent
 	static JLabel imgLabel = new JLabel();	//this is to fix cold start while removing previous iteration flag from the imglabel
     public static void main( String[] args ) throws IOException
     {
-    	Vector<String> validCountries = new Vector<String>();
+    	final Vector<String> validCountries = new Vector<String>();
     	//file handling to store all valid countries in list
     	try {
     		BufferedReader br = new BufferedReader(new FileReader("validateCountry.txt"));
@@ -133,11 +133,11 @@ public class App extends JComponent
 //    	});
     	
     	//GUI
-    	JFrame frame = new JFrame("COVID'19 DATA");
-    	JTextField textField = new JTextField("Type Country Name...");
-    	JLabel label =new JLabel();
-    	JButton button = new JButton("FETCH");
-    	JButton resetButton = new JButton("RESET");
+    	final JFrame frame = new JFrame("COVID'19 DATA");
+    	final JTextField textField = new JTextField("Type Country Name...");
+    	final JLabel label =new JLabel();
+    	final JButton button = new JButton("FETCH");
+    	final JButton resetButton = new JButton("RESET");
     	//to remove text when searh bar is clicked
     	textField.addMouseListener(new MouseAdapter(){
             @Override
