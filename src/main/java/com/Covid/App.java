@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
 import java.util.Vector;
+import java.util.function.Consumer;
 
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.swing.ImageIcon;
@@ -36,9 +37,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
@@ -53,14 +54,15 @@ public class App extends JComponent
 		//System.out.println(doc.body().html());
 		Elements element = doc.select("#maincounter-wrap");
 		//System.out.println(element.html());
-		element.forEach((e) -> {
+		for(Element e : element) {
+		//element.forEach((e) -> {
 			//System.out.println(e.html());
 			String text = e.select("h1").text();
 			//System.out.print(text+" ");
 			String value = e.select(".maincounter-number").text();
 			//System.out.println(value);
 			data.add(text+" "+value+" ");
-		});
+		}//);
 		return data;
 	}
 	public static Vector<String> getDataCountry(String country) throws IOException {
@@ -77,7 +79,8 @@ public class App extends JComponent
 //		doc.select("img").forEach((img) ->{
 //			System.out.println(img.attr("abs:src"));
 //		});    
-		element.forEach((e) -> {
+		for(Element e : element) {
+		//element.forEach((e) -> {
 			//System.out.println(e.html());
 			String text = e.select("h1").text();
 			//System.out.print(text+" ");
@@ -85,7 +88,7 @@ public class App extends JComponent
 			//System.out.println(value);
 			data.add(text+" "+value+" ");
 			result.concat(text+" "+value);
-		});
+		}//);
 		//System.out.println(result);
 		return data;
 	}
@@ -162,9 +165,10 @@ public class App extends JComponent
 						StringBuffer sbr = new StringBuffer(); //to show text in frame
 						sbr.append("<html>").append("<strong>").append(textField.getText().toUpperCase()).append("</strong>").append(":<br>");
 						country = textField.getText();
-						getDataCountry(textField.getText()).forEach((e) -> {
+						for(String e : getDataCountry(textField.getText())) {
+						//getDataCountry(textField.getText()).forEach((e) -> {
 							sbr.append(e).append("<br>");
-						});
+						}//);
 						sbr.append("</html>");
 						label.setText(sbr.toString());
 						getFlag(textField.getText().toLowerCase());
@@ -198,9 +202,10 @@ public class App extends JComponent
 				StringBuffer sbr = new StringBuffer();
 				sbr.append("<html>").append("<strong>").append("GLOBAL:").append("</strong>").append("<br>");
 				try {
-					getDataOverall().forEach((ele) -> {
+					for(String ele : getDataOverall()) {
+					//getDataOverall().forEach((ele) -> {
 						sbr.append(ele).append("<br>");
-					});
+					}//);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -231,9 +236,10 @@ public class App extends JComponent
 		// initial display of global data
 		StringBuffer sbr = new StringBuffer();
 		sbr.append("<html>").append("<strong>").append("GLOBAL:").append("</strong>").append("<br>");
-		getDataOverall().forEach((e) -> {
+		for(String e : getDataOverall()) {
+		//getDataOverall().forEach((e) -> {
 			sbr.append(e).append("<br>");
-		});
+		}//);
 		sbr.append("</html>");
 		label.setText(sbr.toString());
 		frame.add(button);
