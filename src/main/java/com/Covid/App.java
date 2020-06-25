@@ -150,9 +150,9 @@ public class App extends JComponent
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText())) {
+					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText().toLowerCase())) {
 						//checking for valid country else break
-						if(!validCountries.contains(textField.getText())) {
+						if(!validCountries.contains(textField.getText().toLowerCase())) {
 							textField.setText("Type Country Name...");
 							return;
 						}
