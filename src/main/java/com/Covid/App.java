@@ -45,6 +45,7 @@ import org.jsoup.select.Elements;
 
 public class App extends JComponent
 {
+	private static final long serialVersionUID = 1L;
 	public static Vector<String> getDataOverall() throws IOException {
 		Vector<String> data = new  Vector<String>();
 		//System.out.println("Fetching Data");
@@ -164,7 +165,7 @@ public class App extends JComponent
 						frame.remove(imgLabel);	//remove previous iteration image from frame
 						StringBuffer sbr = new StringBuffer(); //to show text in frame
 						sbr.append("<html>").append("<strong>").append(textField.getText().toUpperCase()).append("</strong>").append(":<br>");
-						country = textField.getText();
+						country = textField.getText().toLowerCase();
 						for(String e : getDataCountry(textField.getText())) {
 						//getDataCountry(textField.getText()).forEach((e) -> {
 							sbr.append(e).append("<br>");
