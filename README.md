@@ -1,4 +1,4 @@
-# Notes for Developers
+# impt
 <edge cases> 	1. Reset button will execute if you click on search box and then click on reset button.
 		2. Typing "Type Country Name..." in search and then clicking reset buton wont result in a reset give a valid counntry 		was fetched before doing this.
 		3. reseting search box text back to "Type Country Name..." in some cases needs to be taken care of as the reset button 				works by identifying this text.
