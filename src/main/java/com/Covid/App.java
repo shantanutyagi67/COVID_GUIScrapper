@@ -50,7 +50,7 @@ public class App extends JComponent
 		Vector<String> data = new  Vector<String>();
 		//System.out.println("Fetching Data");
 		String url = "https://www.worldometers.info/coronavirus/";
-		Document doc = Jsoup.connect(url) .get();
+		Document doc = Jsoup.connect(url).get();
 		//System.out.println(doc.title());
 		//System.out.println(doc.body().html());
 		Elements element = doc.select("#maincounter-wrap");
@@ -64,6 +64,10 @@ public class App extends JComponent
 			//System.out.println(value);
 			data.add(text+" "+value+" ");
 		}//);
+		// THIS IS THE HTML SELECTOR COPIED FROM INSPECT ELEMENT
+		String active= doc.select("body > div.container > div:nth-child(2) > div.col-md-8 > div > div:nth-child(14) > div > div.panel-body > div > div.panel_front > div.number-table-main").text();
+		//System.out.println(active.html());
+		data.add("Active Cases:"+" "+active+" ");
 		return data;
 	}
 	public static Vector<String> getDataCountry(String country) throws IOException {
@@ -91,17 +95,26 @@ public class App extends JComponent
 			result.concat(text+" "+value);
 		}//);
 		//System.out.println(result);
+		
+		// NOT PROVIDED BY THE WEBSITE <---
+		//String active= doc.select("body > div.container > div:nth-child(2) > div.col-md-8 > div > div:nth-child(14) > div > div.panel-body > div > div.panel_front > div.number-table-main").text();
+		//System.out.println(active.html());
+		//data.add("Active Cases:"+" "+active+" ");
+		//--->
+		
 		return data;
 	}
 	static int n=0;
 	static String country = "___";
 	static JLabel imgLabel = new JLabel();	//this is to fix cold start while removing previous iteration flag from the imglabel
-    public static void main( String[] args ) throws IOException
+   
+	public static void main( String[] args ) throws IOException
     {
     	final Vector<String> validCountries = new Vector<String>();
     	//file handling to store all valid countries in list
     	try {
-    		BufferedReader br = new BufferedReader(new FileReader("validateCountry.txt"));
+    		@SuppressWarnings("resource")
+			BufferedReader br = new BufferedReader(new FileReader("validateCountry.txt"));
     		    while (br.ready()) {
     		        validCountries.add(br.readLine().toLowerCase());
     		    }
@@ -148,7 +161,6 @@ public class App extends JComponent
         });
     	button.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText().toLowerCase())) {
@@ -195,7 +207,6 @@ public class App extends JComponent
     	
     	resetButton.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {	//removes image, resets the search bar and text displayed to global data
 				if(!textField.getText().equals("Type Country Name...")) {
 				frame.remove(imgLabel);
@@ -258,7 +269,7 @@ public class App extends JComponent
 		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
 		//now the downloading procedure begins
 		String imgURL = doc.select("img").get(1).attr("abs:src");
-		//System.out.println(imgURL);
+		System.out.println(imgURL);
 		//System.out.println(doc.select("body > div:nth-child(10) > div:nth-child(2) > div.col-md-8 > div > div:nth-child(5) > h1 > div > img").attr("abs:src"));
             
             //open the stream from URL
