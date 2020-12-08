@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.Vector;
 import java.util.function.Consumer;
@@ -46,6 +48,32 @@ import org.jsoup.select.Elements;
 public class App extends JComponent
 {
 	private static final long serialVersionUID = 1L;
+	
+	public static Vector<String> getNews() throws IOException {
+		Vector<String> data = new  Vector<String>();
+		//System.out.println("Fetching Data");
+		String url = "https://www.worldometers.info/coronavirus/";
+		Document doc = Jsoup.connect(url).get();
+		//System.out.println(doc.title());
+		//System.out.println(doc.body().html());
+		
+		//news date handle
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+		LocalDateTime now = LocalDateTime.now();  
+		String dateQuery = "#newsdate"+dtf.format(now);
+		dateQuery = "#newsdate2020-12-08";
+		int i=1;
+		while(i<2+10) {
+			i++;
+		//element.forEach((e) -> {
+			//System.out.println(e.html());
+			String value = doc.select(dateQuery+" > div:nth-child("+i+") > div > ul > li").text();
+			//System.out.println(value);
+			data.add(value);
+		}//);
+		return data;
+	}
+	
 	public static Vector<String> getDataOverall() throws IOException {
 		Vector<String> data = new  Vector<String>();
 		//System.out.println("Fetching Data");
@@ -75,7 +103,7 @@ public class App extends JComponent
 		Vector<String> data = new  Vector<String>();
 		//System.out.println("Fetching Data");
 		String url = "https://www.worldometers.info/coronavirus/country/" + country + "/";
-		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
+		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
 		//System.out.println(doc.title());
 		//System.out.println(doc.body().html());
 		Elements element = doc.select("#maincounter-wrap");
@@ -152,6 +180,7 @@ public class App extends JComponent
     	final JLabel label =new JLabel();
     	final JButton button = new JButton("FETCH");
     	final JButton resetButton = new JButton("RESET");
+    	final JButton newsButton = new JButton("NEWS");   
     	//to remove text when searh bar is clicked
     	textField.addMouseListener(new MouseAdapter(){
             @Override
@@ -159,11 +188,14 @@ public class App extends JComponent
                 textField.setText("");
             }
         });
+    	
     	button.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText().toLowerCase())) {
+						label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+						label.setBorder(new EmptyBorder(0,0,0,0));//top,left,bottom,right
 						//checking for valid country else break
 						if(!validCountries.contains(textField.getText().toLowerCase())) {
 							textField.setText("Type Country Name...");
@@ -208,7 +240,9 @@ public class App extends JComponent
     	resetButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {	//removes image, resets the search bar and text displayed to global data
-				if(!textField.getText().equals("Type Country Name...")) {
+				if(!textField.getText().equals("Type Country Name...") || country.equals("___")) {
+				label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+				label.setBorder(new EmptyBorder(0,0,0,0));//top,left,bottom,right
 				frame.remove(imgLabel);
 				textField.setText("Type Country Name...");
 				StringBuffer sbr = new StringBuffer();
@@ -227,6 +261,36 @@ public class App extends JComponent
 			}}
     		
     	});
+    	
+    	newsButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {	//global news
+				frame.remove(imgLabel);
+				textField.setText("Type Country Name...");
+				label.setBorder(new EmptyBorder(0,50,50,10));//top,left,bottom,right
+				StringBuffer sbr = new StringBuffer();
+				sbr.append("<html>").append("<strong>").append("<h2>Live News:</h2>").append("</strong>");
+				label.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+				try {
+					int i = 1;
+					for(String news : getNews()) {
+					//getDataOverall().forEach((news) -> {
+						while(news.charAt(news.length()-1) == ']') {
+							news = news.substring(0, news.length()-9);
+						}
+						sbr.append(i+". "+news).append("<br>");
+						i++;
+					}//);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				sbr.append("</html>");
+				label.setText(sbr.toString());
+			}
+    		
+    	});
+    	
+    	
     	// setting up the frame - positioning of components
 //		frame.add(imgLabel, BorderLayout.SOUTH);
     	//Font f =new Font("TimesRoman", Font.PLAIN, 10);
@@ -241,9 +305,11 @@ public class App extends JComponent
 		label.setHorizontalAlignment(JTextField.CENTER );
 		label.setBackground(Color.GRAY);
 		button.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-		button.setBounds(frame.getWidth()/2-100, 400, 90, 30);
+		button.setBounds(frame.getWidth()/2-150, 400, 90, 30);
 		resetButton.setFont(new Font("TimesRoman", Font.PLAIN, 15));
-		resetButton.setBounds(frame.getWidth()/2, 400, 90, 30);
+		resetButton.setBounds(frame.getWidth()/2-50, 400, 90, 30);
+		newsButton.setFont(new Font("TimesRoman", Font.PLAIN, 15));
+		newsButton.setBounds(frame.getWidth()/2+50, 400, 90, 30);
 		label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		// initial display of global data
 		StringBuffer sbr = new StringBuffer();
@@ -256,6 +322,7 @@ public class App extends JComponent
 		label.setText(sbr.toString());
 		frame.add(button);
 		frame.add(resetButton);
+		frame.add(newsButton); 
 		frame.add(textField, BorderLayout.NORTH);
 		frame.add(label, BorderLayout.CENTER);
 		frame.getContentPane().setBackground(Color.WHITE);
@@ -266,7 +333,7 @@ public class App extends JComponent
 	protected static void getFlag( String country ) throws IOException {
 		String url = "https://www.worldometers.info/coronavirus/country/" + country + "/";
 		//scrapping again
-		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
+		Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36").get();
 		//now the downloading procedure begins
 		String imgURL = doc.select("img").get(1).attr("abs:src");
 		System.out.println(imgURL);
@@ -277,7 +344,7 @@ public class App extends JComponent
             byte[] buffer = new byte[1];
             URLConnection urlConnection = urlImage.openConnection();
             // IMPORTANT- we need to mimic the browser request which can be found out in networking tab 
-            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36");
+            urlConnection.addRequestProperty("User-Agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows Phone OS 7.5; Trident/5.0; IEMobile/9.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.61 Mobile Safari/537.36");
             urlConnection.connect();
             DataInputStream di = new DataInputStream(urlConnection.getInputStream()); //read
             FileOutputStream fo = new FileOutputStream(country+".gif"); //write
