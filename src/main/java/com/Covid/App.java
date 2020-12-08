@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -58,10 +59,9 @@ public class App extends JComponent
 		//System.out.println(doc.body().html());
 		
 		//news date handle
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
-		LocalDateTime now = LocalDateTime.now();  
-		String dateQuery = "#newsdate"+dtf.format(now);
-		dateQuery = "#newsdate2020-12-08";
+		date = Instant.now().toString().substring(0, 10);
+		String dateQuery = "#newsdate"+date;
+		//dateQuery = "#newsdate2020-12-08";
 		int i=1;
 		while(i<2+10) {
 			i++;
@@ -133,7 +133,7 @@ public class App extends JComponent
 		return data;
 	}
 	static int n=0;
-	static String country = "___";
+	static String country = "___", date;
 	static JLabel imgLabel = new JLabel();	//this is to fix cold start while removing previous iteration flag from the imglabel
    
 	public static void main( String[] args ) throws IOException
@@ -195,7 +195,7 @@ public class App extends JComponent
 				try {
 					if(!textField.getText().equals("") && !textField.getText().equals("Type Country Name...") && !country.equals(textField.getText().toLowerCase())) {
 						label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-						label.setBorder(new EmptyBorder(0,0,0,0));//top,left,bottom,right
+						label.setBorder(new EmptyBorder(0,0,20,0));//top,left,bottom,right
 						//checking for valid country else break
 						if(!validCountries.contains(textField.getText().toLowerCase())) {
 							textField.setText("Type Country Name...");
@@ -242,7 +242,7 @@ public class App extends JComponent
 			public void actionPerformed(ActionEvent e) {	//removes image, resets the search bar and text displayed to global data
 				if(!textField.getText().equals("Type Country Name...") || country.equals("___")) {
 				label.setFont(new Font("TimesRoman", Font.PLAIN, 20));
-				label.setBorder(new EmptyBorder(0,0,0,0));//top,left,bottom,right
+				label.setBorder(new EmptyBorder(0,0,20,0));//top,left,bottom,right
 				frame.remove(imgLabel);
 				textField.setText("Type Country Name...");
 				StringBuffer sbr = new StringBuffer();
@@ -265,25 +265,29 @@ public class App extends JComponent
     	newsButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {	//global news
+				//get news
+				Vector<String> someNews = new Vector<String>();
+				try {
+					someNews = getNews();
+				} catch (IOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				frame.remove(imgLabel);
 				textField.setText("Type Country Name...");
 				label.setBorder(new EmptyBorder(0,50,50,10));//top,left,bottom,right
 				StringBuffer sbr = new StringBuffer();
-				sbr.append("<html>").append("<strong>").append("<h2>Live News:</h2>").append("</strong>");
+				sbr.append("<html>").append("<strong>").append("<h2>Live News: "+date+"</h2>").append("</strong>");
 				label.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-				try {
-					int i = 1;
-					for(String news : getNews()) {
-					//getDataOverall().forEach((news) -> {
-						while(news.charAt(news.length()-1) == ']') {
-							news = news.substring(0, news.length()-9);
-						}
-						sbr.append(i+". "+news).append("<br>");
-						i++;
-					}//);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				int i = 1;
+				for(String news : someNews) {
+				//getDataOverall().forEach((news) -> {
+					while(news.charAt(news.length()-1) == ']') {
+						news = news.substring(0, news.length()-9);
+					}
+					sbr.append(i+". "+news).append("<br>");
+					i++;
+				}//);
 				sbr.append("</html>");
 				label.setText(sbr.toString());
 			}
