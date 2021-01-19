@@ -16,6 +16,8 @@ Code : src\main\java\com\Covid
 5. Reset button will take you back to the current global data.
 6. Country flags will be downloaded in the relative project path.
 7. The flag images are deleted right after they are downloaded.
+8. News button will fetch the current news based on PST.
+9. Reset will again go back to the global data page.
 
 VALID COUNTRY NAMES(case insensitive) :
 US
